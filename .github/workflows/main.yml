@@ -15,7 +15,7 @@ jobs:
         id: nuclei_scan
         uses: projectdiscovery/nuclei-action@main
         with:
-          target: http://testphp.vulnweb.com/  # <-- seu alvo
+          target: 'http://66.94.97.154:8080/'  # <-- seu alvo
           # severity: medium,high,critical  # (opcional)
           # templates: cves/,misconfiguration/  # (opcional)
           # rate-limit: 25                  # (opcional)

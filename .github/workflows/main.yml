@@ -1,0 +1,36 @@
+name: Nuclei - Vulnerability Scan
+
+on:
+  workflow_dispatch:      # Permite execução manual pelo GitHub
+
+jobs:
+  nuclei-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código (opcional, mas mantido)
+        uses: actions/checkout@v4
+
+      - name: Nuclei - Vulnerability Scan
+        id: nuclei_scan
+        uses: projectdiscovery/nuclei-action@main
+        with:
+          target: http://testphp.vulnweb.com/  # <-- seu alvo
+          # severity: medium,high,critical  # (opcional)
+          # templates: cves/,misconfiguration/  # (opcional)
+          # rate-limit: 25                  # (opcional)
+
+      - name: Upload do log como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei.log
+          path: nuclei.log
+
+      - name: Enviar alertas para Security Dashboard
+        uses: github/codeql-action/upload-sarif@v3
+        if: steps.nuclei_scan.outputs.sarif_exists == 'true'
+        with:
+          sarif_file: nuclei.sarif
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
